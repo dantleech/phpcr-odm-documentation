@@ -4,44 +4,10 @@ Annotations Reference
 In this chapter a reference of every PHPCR-ODM Annotation is given with short
 explanations on their context and usage.
 
-Index
------
+.. contents::
 
--  :ref:`@Binary <annref_binary>`
--  :ref:`@Boolean <annref_boolean>`
--  :ref:`@Child <annref_child>`
--  :ref:`@Children <annref_children>`
--  :ref:`@Date <annref_date>`
--  :ref:`@Decimal <annref_decimal>`
--  :ref:`@Document <annref_document>`
--  :ref:`@Double <annref_double>`
--  :ref:`@Id <annref_id>`
--  :ref:`@Locale <annref_locale>`
--  :ref:`@Long <annref_long>`
--  :ref:`@MappedSuperclass <annref_mappedsuperclass>`
--  :ref:`@Name <annref_name>`
--  :ref:`@Node <annref_node>`
--  :ref:`@Nodename <annref_nodename>`
--  :ref:`@ParentDocument <annref_parentdocument>`
--  :ref:`@Path <annref_path>`
--  :ref:`@PostLoad <annref_postload>`
--  :ref:`@PostPersist <annref_postpersist>`
--  :ref:`@PostRemove <annref_postremove>`
--  :ref:`@PostUpdate <annref_postupdate>`
--  :ref:`@PrePersist <annref_prepersist>`
--  :ref:`@PreRemove <annref_preremove>`
--  :ref:`@PreUpdate <annref_preupdate>`
--  :ref:`@ReferenceMany <annref_referencemany>`
--  :ref:`@ReferenceOne <annref_referenceone>`
--  :ref:`@Referrers <annref_referrers>`
--  :ref:`@String <annref_string>`
--  :ref:`@Uri <annref_uri>`
--  :ref:`@Uuid <annref_uuid>`
--  :ref:`@VersionCreated <annref_versioncreated>`
--  :ref:`@VersionName <annref_versionname>`
-
-Reference
----------
+Mapping Annotations
+-------------------
 
 .. _annref_binary:
 
@@ -56,36 +22,6 @@ Sets the type of the annotated instance variable to binary.
 ~~~~~~~~
 
 Sets the type of the annotated instance variable to boolean.
-
-.. _annref_child:
-
-@Child
-~~~~~~
-
-Required attributes:
-
-- **name**: Node name of the child document to map, this should be a string.
-
-.. _annref_children:
-
-@Children
-~~~~~~~~~
-
-Optional attributes:
-
-- **filter**: Child name filter.
-- **fetchDepth**: Performance optimisation, number of levels to prefetch and cache, 
-  this should be an integer.
-- **ignoreUntranslated**: Set to false to *not* throw exceptions on untranslated child
-  documents.
-
-.. code-block:: php
-
-   <?php
-    /** 
-     * @Children(filter="a*", fetchDepth=3)
-     */
-    private $children;
 
 .. _annref_date:
 
@@ -102,7 +38,38 @@ Sets the type of the annotated instance variable to DateTime.
 Sets the type of the annotated instance variable to decimal. The decimal field 
 uses the BCMath library which supports numbers of any size or precision.
 
+.. _annref_double:
+
+@Double
+~~~~~~~
+
+Sets the type of the annotated instance variable to double. The PHP type will be **float**.
+
+.. _annref_long:
+
+@Long
+~~~~~
+
+Sets the type of the annotated instance variable to long. The PHP type will be **integer**.
+
+.. _annref_string:
+
+@String
+~~~~~~~
+
+Sets the type of the annotated instance variable to string.
+
+.. _annref_uri:
+
+@Uri
+~~~~
+
+The annotated instance variable will be validated as an URI.
+
 .. _annref_document:
+
+Document annotations
+--------------------
 
 @Document
 ~~~~~~~~~
@@ -146,50 +113,6 @@ Full example:
      // ...
    }
 
-.. _annref_double:
-
-@Double
-~~~~~~~
-
-Sets the type of the annotated instance variable to double. The PHP type will be **float**.
-
-.. _annref_id:
-
-@Id
-~~~
-
-The annotated instance variable will be marked as the document identifier.
-See :ref:`identifiers <basicmapping_identifiers>`.
-
-Required attributes:
-
-- **strategy**: How to generate IDs, one of NONE, REPOSITORY, ASSIGNED or PARENT, default
-  ASSIGNED. See :ref:`generation strategies <basicmapping_identifier_generation_strategies>`.
-
-
-.. code-block:: php
-
-   <?php
-   /**
-    * @Id(strategy="PARENT")
-    */
-   protected $id;
-
-.. _annref_locale:
-
-@Locale
-~~~~~~~
-
-Identifies the annotated instance variable as the field in which to store
-the documents current locale. This field applies only to translated documents.
-
-.. _annref_long:
-
-@Long
-~~~~~
-
-Sets the type of the annotated instance variable to long. The PHP type will be **integer**.
-
 .. _annref_mappedsuperclass:
 
 @MappedSuperclass
@@ -219,6 +142,77 @@ Optional attributes:
     {
         // ... fields and methods
     } 
+
+
+Identification annotations
+--------------------------
+
+.. _annref_id:
+
+@Id
+~~~
+
+The annotated instance variable will be marked as the document identifier.
+See :ref:`identifiers <basicmapping_identifiers>`.
+
+Required attributes:
+
+- **strategy**: How to generate IDs, one of NONE, REPOSITORY, ASSIGNED or PARENT, default
+  ASSIGNED. See :ref:`generation strategies <basicmapping_identifier_generation_strategies>`.
+
+
+.. code-block:: php
+
+   <?php
+   /**
+    * @Id(strategy="PARENT")
+    */
+   protected $id;
+
+.. _annref_uuid:
+
+@Uuid
+~~~~~
+
+The annotated instance variable will be populated with a UUID 
+(Universally Unique Identifier). The UUID is immutable. For
+this field to be reliably populated the document should be
+*referenceable*.
+
+
+Referencing annotations
+-----------------------
+
+.. _annref_child:
+
+
+@Child
+~~~~~~
+
+Required attributes:
+
+- **name**: Node name of the child document to map, this should be a string.
+
+.. _annref_children:
+
+@Children
+~~~~~~~~~
+
+Optional attributes:
+
+- **filter**: Child name filter.
+- **fetchDepth**: Performance optimisation, number of levels to prefetch and cache, 
+  this should be an integer.
+- **ignoreUntranslated**: Set to false to *not* throw exceptions on untranslated child
+  documents.
+
+.. code-block:: php
+
+   <?php
+    /** 
+     * @Children(filter="a*", fetchDepth=3)
+     */
+    private $children;
 
 .. _annref_name:
 
@@ -261,6 +255,59 @@ a different parent will result in a move operation.
 The annotated instance variable must be a valid PHPCR node path and can be used to
 store an arbitrary reference to another node.
 
+.. _annref_referencemany:
+
+@ReferenceMany
+~~~~~~~~~~~~~~
+
+Optional attributes:
+
+-  **targetDocument**: *string*, Specify type of target document class. Note that this
+   is an optional parameter and by default you can associate *any* document.
+-  **strategy**: *enum*, One of `weak`, `hard` or `path`. See :ref:`reference other documents <associationmapping_referenceotherdocuments>`.
+
+.. code-block:: php
+
+   <?php
+   /**
+    * @ReferenceMany(targetDocument="Phonenumber", strategy="hard")
+    */
+    protected $phonenumbers;
+
+.. _annref_referenceone:
+
+@ReferenceOne
+~~~~~~~~~~~~~
+
+Optional attributes:
+
+-  **targetDocument**: Specify type of target document class. Note that this
+   is an optional parameter and by default you can associate *any* document.
+-  **strategy**: One of `weak`, `hard` or `path`. See :ref:`reference other documents <associationmapping_referenceotherdocuments>`.
+
+.. _annref_referrers:
+
+@Referrers
+~~~~~~~~~~
+
+Mark the annotated instance variable to contain the documents which refer to this document.
+
+Optional attributes:
+
+-  **filter**: Filters referrers by the referencing property name.
+-  **referenceType**: One of `weak` or `hard`.
+
+.. code-block:: 
+
+   <?php
+   /**
+    * @Referrers(filter="myapp:mycustomnode | a*", referenceType="hard")
+    */
+   protected $myReferrers;
+    
+Lifecycle callback annotations
+------------------------------
+
 .. _annref_postload:
 
 @PostLoad
@@ -283,7 +330,7 @@ event. See :ref:`life cycle callbacks <events_lifecyclecallbacks>`
 .. _annref_postpersist:
 
 @PostPersist
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~
 
 Life cycle callback. The marked method will be called automatically on the ``postPersist``
 event. See :ref:`life cycle callbacks <events_lifecyclecallbacks>`
@@ -395,79 +442,19 @@ event. See :ref:`life cycle callbacks <events_lifecyclecallbacks>`
       // ... do something before the document has been updated
     }
 
-.. _annref_referencemany:
+Translation annotations
+-----------------------
 
-@ReferenceMany
-~~~~~~~~~~~~~~
+.. _annref_locale:
 
-Optional attributes:
-
--  **targetDocument**: *string*, Specify type of target document class. Note that this
-   is an optional parameter and by default you can associate *any* document.
--  **strategy**: *enum*, One of `weak`, `hard` or `path`. See :ref:`reference other documents <associationmapping_referenceotherdocuments>`.
-
-.. code-block:: php
-
-   <?php
-   /**
-    * @ReferenceMany(targetDocument="Phonenumber", strategy="hard")
-    */
-    protected $phonenumbers;
-
-.. _annref_referenceone:
-
-@ReferenceOne
-~~~~~~~~~~~~~
-
-Optional attributes:
-
--  **targetDocument**: Specify type of target document class. Note that this
-   is an optional parameter and by default you can associate *any* document.
--  **strategy**: One of `weak`, `hard` or `path`. See :ref:`reference other documents <associationmapping_referenceotherdocuments>`.
-
-.. _annref_referrers:
-
-@Referrers
-~~~~~~~~~~
-
-Mark the annotated instance variable to contain the documents which refer to this document.
-
-Optional attributes:
-
--  **filter**: Filters referrers by the referencing property name.
--  **referenceType**: One of `weak` or `hard`.
-
-.. code-block:: 
-
-   <?php
-   /**
-    * @Referrers(filter="myapp:mycustomnode | a*", referenceType="hard")
-    */
-   protected $myReferrers;
-    
-.. _annref_string:
-
-@String
+@Locale
 ~~~~~~~
 
-Sets the type of the annotated instance variable to string.
+Identifies the annotated instance variable as the field in which to store
+the documents current locale. This field applies only to translated documents.
 
-.. _annref_uri:
-
-@Uri
-~~~~
-
-The annotated instance variable will be validated as an URI.
-
-.. _annref_uuid:
-
-@Uuid
-~~~~~
-
-The annotated instance variable will be populated with a UUID 
-(Universally Unique Identifier). The UUID is immutable. For
-this field to be reliably populated the document should be
-*referenceable*.
+Versioning annotations
+----------------------
 
 .. _annref_versioncreated:
 
